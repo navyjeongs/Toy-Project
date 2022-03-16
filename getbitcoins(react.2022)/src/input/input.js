@@ -14,7 +14,6 @@ export default function Input() {
   const resetMoneyfunc = (e) => {
     getMoney(0);
   };
-
   return (
     <>
       <form className="coinInput" onSubmit={getMoneyfunc}>
