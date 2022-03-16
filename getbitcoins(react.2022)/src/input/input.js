@@ -35,4 +35,3 @@ export default function Input() {
   );
 }
 
-// git clone 확인용
