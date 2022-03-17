@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 
-const options = { method: "GET", headers: { Accept: "application/json" } };
 
 export default function UpbitList() {
+  const options = { method: "GET", headers: { Accept: "application/json" } };
+
   const [coinList, setCoinList] = useState([]);
 
-  const detail = [];
+  const krwCoin = [];
   // 코인 목록 불러오기
 
   useEffect(() => {
@@ -17,22 +18,46 @@ export default function UpbitList() {
       .catch((err) => console.error(err));
   }, []);
 
-  const setDetailfunc = (coin) => {
-    detail.push({ coin });
-  };
 
-  console.log(coinList);
-  console.log(detail);
+  const getKrwCoinfunc = () => {
+    coinList.map( (coin) => {
+      if(coin.market.startsWith("KRW")) {
+        krwCoin.push(coin.market);
+      }
+    })
+  }
+
+  // console.log(coinList);
+
+  
+
+  const getHighPricefunc = (coin) => {
+
+    var high = 777770;
+
+    fetch(`https://api.upbit.com/v1/ticker?markets=${coin}`, options)
+    .then(response => response.json())
+    .then((response) => {
+      console.log(coin)
+      console.log(response[0].highest_52_week_price)
+    })
+    .catch(err => console.error(err))
+
+    return high;
+  }
+
+
+
+  getKrwCoinfunc();
+  
+
   return (
     <>
-      {coinList.map((coin) => {
-        setDetailfunc(coin.market);
-      })}
-      <ul>
-        {detail.slice(1, 11).map((coin) => (
-          <li>{coin.coin}</li>
-        ))}
-      </ul>
+    <dl>
+    {krwCoin.slice(1, 5).map( (coin) => (
+        <li key={coin}>{coin}의 52주 최고가 : {getHighPricefunc(coin)}</li>
+  ))}
+    </dl>
     </>
   );
 }
