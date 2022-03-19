@@ -1,14 +1,10 @@
 import { useEffect, useState } from "react";
 
-
 export default function UpbitList() {
-  const options = { method: "GET", headers: { Accept: "application/json" } };
-
+  // Upbit의 CoinList 저장
   const [coinList, setCoinList] = useState([]);
 
-  const krwCoin = [];
-  // 코인 목록 불러오기
-
+  const options = { method: "GET", headers: { Accept: "application/json" } };
   useEffect(() => {
     fetch("https://api.upbit.com/v1/market/all?isDetails=false", options)
       .then((response) => response.json())
@@ -18,46 +14,47 @@ export default function UpbitList() {
       .catch((err) => console.error(err));
   }, []);
 
-
+  // coinList에서 KRW로 시작하는 코인의 market과 korean_name을 krwCoin에 저장
+  const krwCoin = [];
   const getKrwCoinfunc = () => {
-    coinList.map( (coin) => {
-      if(coin.market.startsWith("KRW")) {
-        krwCoin.push(coin.market);
+    coinList.map((coin) => {
+      if (coin.market.startsWith("KRW")) {
+        krwCoin.push({
+          korean_name: coin.korean_name,
+          market: coin.market,
+        });
       }
-    })
-  }
+    });
+  };
 
-  // console.log(coinList);
-
-  
+  console.log(krwCoin);
 
   const getHighPricefunc = (coin) => {
-
-    var high = 777770;
+    var high = 0;
 
     fetch(`https://api.upbit.com/v1/ticker?markets=${coin}`, options)
-    .then(response => response.json())
-    .then((response) => {
-      console.log(coin)
-      console.log(response[0].highest_52_week_price)
-    })
-    .catch(err => console.error(err))
+      .then((response) => response.json())
+      .then((response) => {
+        high = response[0].highest_52_week_price;
+        console.log(response[0].highest_52_week_price);
+      })
+      .catch((err) => console.error(err));
 
-    return high;
-  }
-
-
+    return <li>{high}high</li>;
+  };
 
   getKrwCoinfunc();
-  
 
   return (
     <>
-    <dl>
-    {krwCoin.slice(1, 5).map( (coin) => (
-        <li key={coin}>{coin}의 52주 최고가 : {getHighPricefunc(coin)}</li>
-  ))}
-    </dl>
+      <dl>
+        {krwCoin.slice(1, 3).map(
+          (coin) => getHighPricefunc(coin.market)
+          // <li key={coin.market}>
+          //   {coin.korean_name}의 52주 최고가 : {getHighPricefunc(coin.market)}
+          // </li>
+        )}
+      </dl>
     </>
   );
 }
