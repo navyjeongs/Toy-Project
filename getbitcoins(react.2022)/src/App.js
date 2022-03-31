@@ -4,6 +4,7 @@ import CoinList from "./CoinList";
 import { BrowserRouter, Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
 import UpbitList from "./UpbitList";
+import Recover from "./Recover";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/" element={<Input />} />
           <Route path="/CoinList" element={<CoinList />} />
           <Route path="/UpbitList" element={<UpbitList />} />
+          <Route path="/Recover" element={<Recover />} />
         </Routes>
       </BrowserRouter>
     </>
